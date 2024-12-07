@@ -8,7 +8,7 @@ function Header() {
         <Link href="/" className='flex items-center text-4xl font-thin'>
         {/**Avartar */}
         <Avatar 
-        seed='Heartbreak support Agent'
+        seed='Heartbreak Fam support Agent'
         />
         <div className='space-y-1'>
             <h1>Classic</h1>
