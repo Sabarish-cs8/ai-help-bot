@@ -24,8 +24,8 @@ export const serverClient = new ApolloClient({
     ssrMode:true,
     link:new HttpLink({
         uri:process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT, //Replace with your GraphQL endpoint
-        headers:{
-            Authorization:`Apikey ${process.env.GRAPHQL_TOKEN}`,
+        headers: {
+            Authorization: `Apikey ${process.env.GRAPHQL_TOKEN}`,
         },
         fetch,
     }),

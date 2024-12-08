@@ -3,10 +3,10 @@
 import Avatar from '@/components/Avatar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { CREATE_CHATBOT } from '@/graphsql/mutations/mutations';
+import { CREATE_CHATBOT } from '@/graphql/mutations/mutations';
 import { useMutation } from '@apollo/client';
 import { useUser } from '@clerk/nextjs';
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"
 import React, { FormEvent, useState } from 'react'
 
 function CreateChatbot() {
@@ -20,30 +20,21 @@ function CreateChatbot() {
       clerk_user_id:user?.id,
       name,
     },
-  onCompleted: (data) => {
-    console.log('Mutation completed with data:', data);
-  },
-  onError: (error) => {
-    console.error('Error during mutation:', error);
-  },
-});
+  });
+
   const handleSubmit = async (e: FormEvent)=>{
     e.preventDefault();
-    console.log('Submitting:', { clerk_user_id: user?.id, name });
+
     try {
       const data = await createChatbot();
       setName("");
-      if (data) {
-        console.log('Created chatbot:', data);
-        router.push(`/edit-chatbot/${data.data.insertChatbots.id}`);
-      } else {
-        console.log('No data returned from mutation');
-      }
+
+      router.push(`/edit-chatbot/${data.data.insertchatbots.id}`)
 
       
     } catch (err) {
 
-      console.error('Mutation failed:',err);
+      console.error(err);
       
     }
   }

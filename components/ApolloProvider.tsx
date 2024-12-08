@@ -1,6 +1,6 @@
 "use client"
 
-import client from "@/graphsql/apolloClient"
+import client from "@/graphql/apolloClient"
 import { ApolloProvider } from "@apollo/client"
 
 const ApolloProviderWrapper = ({children}:{children : React.ReactNode})=>{
