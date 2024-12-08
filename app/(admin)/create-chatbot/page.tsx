@@ -18,7 +18,8 @@ function CreateChatbot() {
     CREATE_CHATBOT,{
     variables:{
       clerk_user_id:user?.id,
-      name,
+      name:name,
+      created_at: new Date().toISOString()
     },
   });
 
@@ -29,7 +30,7 @@ function CreateChatbot() {
       const data = await createChatbot();
       setName("");
 
-      router.push(`/edit-chatbot/${data.data.insertchatbots.id}`)
+      router.push(`/edit-chatbot/${data.data.insertChatbots.id}`)
 
       
     } catch (err) {
