@@ -44,6 +44,9 @@ export async function POST(request:NextRequest){
             headers:corsHeaders,
          })
     } catch (error) {
-        
+        console.log(error);
+        return NextResponse.json(error,{
+            status:500,
+        });        
     }
 }
