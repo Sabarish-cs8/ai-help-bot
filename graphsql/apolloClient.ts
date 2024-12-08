@@ -8,10 +8,10 @@ import {
 export const BASE_URL = 
      process.env.NODE_ENV !== "development" 
      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-     : "http://localhost:3000";
+     : "http://localhost:3001";
 
 const httpLink = createHttpLink({
-    uri:`${BASE_URL}/api/graphsql`, //point to the new API route
+    uri:`${BASE_URL}/api/graphql`, //point to the new API route
 });
 
 const defaultOptions: DefaultOptions = {
