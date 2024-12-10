@@ -1,4 +1,3 @@
-import { GetChatbotByIdResponse } from './types';
 
 export interface Chatbot {
     id:number;

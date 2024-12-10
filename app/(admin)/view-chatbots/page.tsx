@@ -10,7 +10,7 @@ import Link from "next/link";
 export const dynamic="force-dynamic";
 
 async function ViewChatbots() {
-
+       
     const {userId} = await auth();
     if(!userId) return;
 
@@ -24,9 +24,7 @@ async function ViewChatbots() {
         },
     });
 
-console.log("Fetched data:", chatbotsByUser);
-
-    const sortedChatbotsByUser: Chatbot[] = [...chatbotsByUser].sort((a,b)=> new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    const sortedChatbotsByUser: Chatbot[] =[...chatbotsByUser].sort((a,b)=> new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
   return (
     <div className="flex-1 pb-20 p-10">
         <h1 className="text-xl lg:text-3xl font-semibold mb-5">
@@ -80,7 +78,6 @@ console.log("Fetched data:", chatbotsByUser);
                                 ))}
                             </ul>
                         </div>
-
                     </li>
                 </Link>
             ))}
