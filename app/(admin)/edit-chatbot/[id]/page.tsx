@@ -6,6 +6,7 @@ import {Input } from "@/components/ui/input";
 import { BASE_URL } from "@/graphql/apolloClient";
 import { GET_CHATBOT_BY_ID } from "@/graphql/queries/queries";
 import { GetChatbotByIdResponse, GetChatbotByIdVariables } from "@/types/types";
+import Characteristic from "@/components/Characteristic";
 import { useQuery } from "@apollo/client";
 import { Copy } from "lucide-react";
 import Link from "next/link";
@@ -14,6 +15,7 @@ import { toast } from "sonner";
 function EditChatbot({params:{id}}:{params:{id:string}}) {
 
   const [url , setUrl]=useState<string>("");
+  const [newCharacteristic,setNewCharacteristic]=useState<string>("");
   const [chatbotName , setChatbotName]=useState<string>("");
 
   const { data , loading ,error}=useQuery<GetChatbotByIdResponse,GetChatbotByIdVariables>(
@@ -64,8 +66,48 @@ function EditChatbot({params:{id}}:{params:{id:string}}) {
             X
           </Button>
 
-          <div>
+          <div className="flex space-x-4">
             <Avatar seed={chatbotName} />
+            <form 
+            //onSubmit={handleUpdateChatbot}
+            className="flex flex-1 space-x-2 items-center"
+            >
+              <Input 
+               value={chatbotName}
+               onChange={(e) => setChatbotName(e.target.value)}
+               placeholder={chatbotName}
+               className="w-full border-none bg-transparent text-xl font-bold"
+               required
+              />
+              <Button type="submit" disabled={!chatbotName}>
+                Update
+              </Button>
+            </form>
+          </div>
+
+          <h2 className="text-xl font-bold mt-10">Here what your AI knows...</h2>
+          <p>
+            Your chatbot is equipped with the following information to assist you in your conversations with your customers & users
+          </p>
+          <div>
+            <form>
+              <Input 
+                type="text"
+                placeholder="Example:If customer asks for prices,provide pricing page:www.example.com/pricing"
+                value={newCharacteristic}
+                onChange={(e)=>setNewCharacteristic(e.target.value)}
+              />
+              <Button type="submit" disabled={!newCharacteristic}>
+                Add
+              </Button>
+            </form>
+            <ul className="flex flex-wrap-reverse gap-5">
+              {data?.chatbots.chatbot_characteristics.map((characteristic)=>(
+                <Characteristic 
+                key={characteristic.id}
+                characteristic={characteristic} />
+            ))}
+            </ul>
           </div>
 
       </section>
