@@ -47,7 +47,7 @@ export const GET_CHATBOTS_BY_USER =gql`
        content
        created_at
        }
-      }
+      } 
      }
    }
 `;
