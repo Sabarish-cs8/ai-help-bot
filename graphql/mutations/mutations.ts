@@ -12,7 +12,7 @@ export const CREATE_CHATBOT=gql`
 
   export const REMOVE_CHARACTERISTIC=gql`
   mutation RemoveCharacteristic($characteristicId:Int!){
-  deleteChatbot_characteristic(id:$characteristicId){
+  deleteChatbot_characteristics(id:$characteristicId){
     id
     # Add other fields your might want to return after removal
   }}
@@ -38,4 +38,16 @@ export const CREATE_CHATBOT=gql`
   # Add other fields you might want to return after adding
   }
   }  
+  `;
+
+  export const UPDATE_CHATBOT=gql`
+  mutation UpdateChatbot($id:Int!,$name:String!){
+  updateChatbots(id:$id,name:$name){
+  id
+  name
+  created_at
+
+  # Add other fields you might want to return after update
+  }
+  }
   `;

@@ -15,15 +15,15 @@ function Characteristic({characteristic,}:{characteristic:ChatbotCharacteristic}
         try {
             await removeCharacteristic({
                 variables:{
-                    id:characteristicId,
+                    characteristicId,
                 },
             });
         } catch (error) {
-         console.error(error);           
+         console.error("Failed to remove characteristic:",error);           
         }
     }
   return (
-    <li className='relative p-10 bg-white border rounded-md'>
+    <li key={characteristic.id} className='relative p-10 bg-white border rounded-md'>
         {characteristic.content}
 
         <OctagonX 

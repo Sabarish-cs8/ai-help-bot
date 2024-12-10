@@ -10,9 +10,9 @@ import Characteristic from "@/components/Characteristic";
 import { useMutation, useQuery } from "@apollo/client";
 import { Copy } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ADD_CHARACTERISTIC, DELETE_CHATBOT } from "@/graphql/mutations/mutations";
+import { ADD_CHARACTERISTIC, DELETE_CHATBOT, UPDATE_CHATBOT } from "@/graphql/mutations/mutations";
 import { redirect } from "next/navigation";
 function EditChatbot({params:{id}}:{params:{id:string}}) {
 
@@ -29,6 +29,10 @@ function EditChatbot({params:{id}}:{params:{id:string}}) {
     refetchQueries:["GetChatbotById"],
   })
 
+  //Update Chatbot Mutation
+  const [updateChatbot]=useMutation(UPDATE_CHATBOT,{
+    refetchQueries:["GetChatbotById"],
+  })
   const { data , loading ,error}=useQuery<GetChatbotByIdResponse,GetChatbotByIdVariables>(
     GET_CHATBOT_BY_ID,
     {variables:{id}},
@@ -64,6 +68,28 @@ function EditChatbot({params:{id}}:{params:{id:string}}) {
       console.error("Failed to add characteristic:",err);
     }
   };
+
+const handleUpdateChatbot =async (e: FormEvent<HTMLFormElement>)=>{
+  e.preventDefault();
+
+  try {
+    const promise = updateChatbot({
+      variables:{
+        id,
+        name:chatbotName,
+      },
+    });
+
+    toast.promise(promise,{
+      loading:"Updating...",
+      success:"Chatbot Name Successfully updated!",
+      error:"Failed to update chatbot",
+    })
+  } catch (err) {
+    console.error("Failed to update chatbot:" ,err);
+    
+  }
+}
 
   const handleDelete = async (id:string)=>{
     const isConfirmed = window.confirm("Are you sure you want to delete this chatbot?");
@@ -132,7 +158,7 @@ function EditChatbot({params:{id}}:{params:{id:string}}) {
           <div className="flex space-x-4">
             <Avatar seed={chatbotName} />
             <form 
-            //onSubmit={handleUpdateChatbot}
+            onSubmit={handleUpdateChatbot}
             className="flex flex-1 space-x-2 items-center"
             >
               <Input 
@@ -152,12 +178,13 @@ function EditChatbot({params:{id}}:{params:{id:string}}) {
           <p>
             Your chatbot is equipped with the following information to assist you in your conversations with your customers & users
           </p>
-          <div>
+          <div className="bg-gray-200 p-5 md:p-5 rounded-md mt-5">
             <form onSubmit={e=>{
               e.preventDefault();
               handleAddCharacteristic(newCharacteristic);
               setNewCharacteristic("");
-            }}>
+            }}
+            className="flex space-x-2 mb-5">
               <Input 
                 type="text"
                 placeholder="Example:If customer asks for prices,provide pricing page:www.example.com/pricing"
