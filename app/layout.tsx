@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import ApolloProviderWrapper from "@/components/ApolloProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Classic",
@@ -21,6 +22,9 @@ export default function RootLayout({
         {children}
 
         {/**Toaster */}
+        <Toaster 
+        position="bottom-center"
+        />
       </body>
     </html>
     </ClerkProvider>
