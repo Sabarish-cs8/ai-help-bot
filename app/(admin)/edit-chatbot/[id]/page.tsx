@@ -1,8 +1,12 @@
 "use client";
 
+import Avatar from "@/components/Avatar";
 import { Button } from "@/components/ui/button";
 import {Input } from "@/components/ui/input";
 import { BASE_URL } from "@/graphql/apolloClient";
+import { GET_CHATBOT_BY_ID } from "@/graphql/queries/queries";
+import { GetChatbotByIdResponse, GetChatbotByIdVariables } from "@/types/types";
+import { useQuery } from "@apollo/client";
 import { Copy } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -10,6 +14,18 @@ import { toast } from "sonner";
 function EditChatbot({params:{id}}:{params:{id:string}}) {
 
   const [url , setUrl]=useState<string>("");
+  const [chatbotName , setChatbotName]=useState<string>("");
+
+  const { data , loading ,error}=useQuery<GetChatbotByIdResponse,GetChatbotByIdVariables>(
+    GET_CHATBOT_BY_ID,
+    {variables:{id}},
+  )
+
+  useEffect(()=>{
+    if(data){
+      setChatbotName(data.chatbots.name)
+    }
+  },[data])
 
   useEffect(()=>{
     const url = `${BASE_URL}/chatbot/${id}`;
@@ -37,9 +53,22 @@ function EditChatbot({params:{id}}:{params:{id:string}}) {
             <Copy className="h-4 w-4" />
           </Button>
         </div>
-
-
       </div>
+
+      <section className="relative mt-5 bg-white p-5 md:p-10 rounded-lg">
+        <Button 
+          variant="destructive"
+          className="absolute top-2 right-2 h-8 w-2"
+          //onClick={()=>handleDelete(id)}
+          >
+            X
+          </Button>
+
+          <div>
+            <Avatar seed={chatbotName} />
+          </div>
+
+      </section>
     </div>
   )
 }
