@@ -84,7 +84,7 @@ query GetChatSessionMessages($id: Int!){
    chatbots{
     name
    }
-    guest{
+    guests{
     name
     email
     }

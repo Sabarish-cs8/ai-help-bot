@@ -17,8 +17,9 @@ async function ReviewSession({params:{id}}:{params :{id:string}}) {
       guests:{name:guestName,email},
     },
   },
-} = await serverClient.query<GetChatSessionMessagesResponse,
-GetChatSessionMessagesVariables>({
+} = await serverClient.query<
+   GetChatSessionMessagesResponse,
+   GetChatSessionMessagesVariables>({
   query:GET_CHAT_SESSION_MESSAGES,
   variables:{id:parseInt(id)},
 });
