@@ -1,6 +1,7 @@
 "use client";
 
 import Avatar from "@/components/Avatar";
+import Messages from "@/components/Messages";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,11 +14,11 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { GET_CHATBOT_BY_ID } from "@/graphql/queries/queries";
+import { GET_CHATBOT_BY_ID, GET_MESSAGES_BY_CHAT_SESSION_ID } from "@/graphql/queries/queries";
 import startNewChat from "@/lib/startNewChat";
-import { GetChatbotByIdResponse } from "@/types/types";
-import { Message } from "postcss";
-import { useState } from "react";
+import { GetChatbotByIdResponse, Message, MessagesByChatSessionIdResponse, MessagesByChatSessionIdVariables } from "@/types/types";
+import { useQuery } from "@apollo/client";
+import { useEffect, useState } from "react";
 
 
 function ChatbotPage({params:{id}} :{params:{id:string}}) {
@@ -27,7 +28,7 @@ function ChatbotPage({params:{id}} :{params:{id:string}}) {
   const [isOpen,setIsOpen]=useState(true);
   const [chatId,setChatId]=useState(0);
   const [loading,setLoading]=useState(false);
-  const [message,setMessage]=useState<Message[]>([]);
+  const [messages,setMessages]=useState<Message[]>([]);
 
 
   const {data:chatBotData} = useQuery<GetChatbotByIdResponse>(
@@ -40,12 +41,21 @@ function ChatbotPage({params:{id}} :{params:{id:string}}) {
     loading:loadingQuery,
     error,
     data,
-  } = useQuery<MessagesByChatSessionIdResponse>(
+  } = useQuery<MessagesByChatSessionIdResponse,MessagesByChatSessionIdVariables>(
+    GET_MESSAGES_BY_CHAT_SESSION_ID,
     {
       variables:{chat_session_id:chatId},
       skip:!chatId,
     }
   );
+
+  useEffect(()=>{
+    if(data) {
+      setMessages(data.chat_sessions.message);
+    }
+  },[data])
+
+  
     const handleInformationSubmit=async (e: React.FormEvent) =>{
     e.preventDefault();
 
@@ -117,6 +127,11 @@ function ChatbotPage({params:{id}} :{params:{id:string}}) {
           </div>
 
         </div>
+
+        <Messages
+        messages={messages}
+        chatbotName={chatBotData?.chatbots.name!}
+        />
       </div>
     </div>
   )
