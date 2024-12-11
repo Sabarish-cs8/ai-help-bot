@@ -28,6 +28,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import {zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { matchesGlob } from "path";
 const formSchema = z.object({
   Message: z.string().min(2,"Your Message is too short!")
 });
@@ -95,6 +96,66 @@ function ChatbotPage({params:{id}} :{params:{id:string}}) {
       setIsOpen(true);
       setLoading(false)
       return;
+    }
+
+    // Handle message flow here...
+
+    if(!message.trim()){
+      return; // Do not submit if the message is empty
+    }
+
+    //Optimistically update the UI with the user's message
+    const userMessage:Message = {
+      id:Date.now(),
+      content:message,
+      created_at:new Date().toISOString(),
+      chat_session_id:chatId,
+      sender:"user"
+    };
+
+    //...And show loading state for AI response
+
+    const loadingMessage:Message ={
+      id:Date.now()+1,
+      content:"Thinking...",
+      created_at:new Date().toISOString(),
+      chat_session_id:chatId,
+      sender:"ai"
+    };
+
+    setMessages((prevMessages)=>[
+      ...prevMessages,
+      userMessage,
+      loadingMessage,
+    ]);
+
+    try {
+      const response = await fetch ("/api/send-message",{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+        },
+        body:JSON.stringify({
+          name:name,
+          chat_session_id:chatId,
+          chatbot_id:id,
+          content:message,
+        }),
+      });
+
+      const result = await response.json();
+      console.log("Message from chatbot-id-page:",result)
+
+      // Update the loading message for the AI with the actual response
+      setMessages((prevMessages)=>
+      prevMessages.map((msg)=>
+      msg.id === loadingMessage.id
+      ? {...msg,content:result.content,id:result.id}
+    :msg)
+)
+    } catch (error) {
+      console.error("Error sending message:" , error);
+      
     }
   }
   return (
@@ -183,7 +244,9 @@ function ChatbotPage({params:{id}} :{params:{id:string}}) {
                 </FormItem>
                )}
                />
-               <Button type="submit" className="h-full">
+               <Button type="submit" className="h-full"
+               disabled={form.formState.isSubmitting || !form.formState.isValid}
+               >
                 Send
                </Button>
           </form>
