@@ -27,8 +27,7 @@ import { useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import {zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
-import { matchesGlob } from "path";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 const formSchema = z.object({
   Message: z.string().min(2,"Your Message is too short!")
 });
@@ -45,7 +44,7 @@ function ChatbotPage({params:{id}} :{params:{id:string}}) {
    const form = useForm<z.infer<typeof formSchema>>({
     resolver:zodResolver(formSchema),
     defaultValues:{
-      message:"",
+      Message:"",
     },
    });
 
@@ -88,7 +87,7 @@ function ChatbotPage({params:{id}} :{params:{id:string}}) {
 
   async function onSubmit(values:z.infer<typeof formSchema>){
     setLoading(true);
-    const {message:formMessage} = values;
+    const {Message:formMessage} = values;
     const message = formMessage;
     form.reset();
 
@@ -231,7 +230,7 @@ function ChatbotPage({params:{id}} :{params:{id:string}}) {
           className="flex items-start sticky bottom-0 z-50 space-x-4 drop-shadow-lg p-4 bg-gray-100 rounded-md">
             <FormField
                control={form.control}
-               name="message"
+               name="Message"
                render={({field})=>(
                 <FormItem className="flex-1">
                   <FormLabel hidden>Message</FormLabel>
@@ -241,6 +240,7 @@ function ChatbotPage({params:{id}} :{params:{id:string}}) {
                     className="p-8"
                     />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
                )}
                />
