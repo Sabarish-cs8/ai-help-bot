@@ -33,6 +33,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/react-timeago": "^4.1.7",
+    "daisyui": "^4.12.20",
     "eslint": "^8",
     "eslint-config-next": "15.0.4",
     "postcss": "^8",

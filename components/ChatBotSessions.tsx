@@ -23,7 +23,7 @@ function ChatBotSessions({chatbots}:{chatbots:Chatbot[]}) {
         setSortedChatbots(sortedArray);
     },[chatbots]);
   return (
-    <div>
+    <div className="bg-white">
         <Accordion type="single" collapsible>
             {sortedChatbots.map((chatbot)=>{
                 const hasSessions = chatbot.chat_sessions.length > 0 ;
@@ -59,7 +59,7 @@ function ChatBotSessions({chatbots}:{chatbots:Chatbot[]}) {
                                      {session.guests?.email || "No email provided"}
                                     </p>
                                     <p className="absolute top-5 right-5 text-sm">
-                                       {/* <ReactTimeago date={new Date(session.created_at)} />*/}
+                                        <ReactTimeago date={new Date(session.created_at)} />
                                     </p>
                                   </Link>
                             ))} 
