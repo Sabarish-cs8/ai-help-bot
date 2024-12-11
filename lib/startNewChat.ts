@@ -32,7 +32,7 @@ async function startNewChat(
                 chat_session_id:chatSessionId,
                 created_at: new Date().toISOString(),
                 sender:"ai",
-                content:`Welcome ${guestName}! \n How can I assist you today? 😉`,
+                content:`Welcome ${guestName}!\n How can I assist you today? 😉`,
             },
         });
 

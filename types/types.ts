@@ -27,7 +27,7 @@ export interface ChatSession{
     chatbot_id:number;
     guest_id:number | null;
     created_at:string;
-    message:Message[];
+    messages:Message[];
     guests:Guest;
 }
 

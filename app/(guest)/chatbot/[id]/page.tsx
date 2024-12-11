@@ -12,14 +12,25 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { GET_CHATBOT_BY_ID, GET_MESSAGES_BY_CHAT_SESSION_ID } from "@/graphql/queries/queries";
+import { GET_CHATBOT_BY_ID, 
+  GET_MESSAGES_BY_CHAT_SESSION_ID } from "@/graphql/queries/queries";
 import startNewChat from "@/lib/startNewChat";
-import { GetChatbotByIdResponse, Message, MessagesByChatSessionIdResponse, MessagesByChatSessionIdVariables } from "@/types/types";
+import { GetChatbotByIdResponse, 
+  Message,
+  MessagesByChatSessionIdResponse,
+  MessagesByChatSessionIdVariables
+} from "@/types/types";
 import { useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
-
+import { z } from "zod";
+import {zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+const formSchema = z.object({
+  Message: z.string().min(2,"Your Message is too short!")
+});
 
 function ChatbotPage({params:{id}} :{params:{id:string}}) {
   
@@ -30,6 +41,12 @@ function ChatbotPage({params:{id}} :{params:{id:string}}) {
   const [loading,setLoading]=useState(false);
   const [messages,setMessages]=useState<Message[]>([]);
 
+   const form = useForm<z.infer<typeof formSchema>>({
+    resolver:zodResolver(formSchema),
+    defaultValues:{
+      message:"",
+    },
+   });
 
   const {data:chatBotData} = useQuery<GetChatbotByIdResponse>(
     GET_CHATBOT_BY_ID,
@@ -51,7 +68,7 @@ function ChatbotPage({params:{id}} :{params:{id:string}}) {
 
   useEffect(()=>{
     if(data) {
-      setMessages(data.chat_sessions.message);
+      setMessages(data.chat_sessions.messages);
     }
   },[data])
 
@@ -66,6 +83,19 @@ function ChatbotPage({params:{id}} :{params:{id:string}}) {
     setChatId(chatId);
     setLoading(false);
     setIsOpen(false);
+  }
+
+  async function onSubmit(values:z.infer<typeof formSchema>){
+    setLoading(true);
+    const {message:formMessage} = values;
+    const message = formMessage;
+    form.reset();
+
+    if(!name||!email){
+      setIsOpen(true);
+      setLoading(false)
+      return;
+    }
   }
   return (
     <div className="w-full flex bg-gray-100">
@@ -132,6 +162,33 @@ function ChatbotPage({params:{id}} :{params:{id:string}}) {
         messages={messages}
         chatbotName={chatBotData?.chatbots.name!}
         />
+            
+
+        <Form {...form}>
+          <form 
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex items-start sticky bottom-0 z-50 space-x-4 drop-shadow-lg p-4 bg-gray-100 rounded-md">
+            <FormField
+               control={form.control}
+               name="message"
+               render={({field})=>(
+                <FormItem className="flex-1">
+                  <FormLabel hidden>Message</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Type a message..."
+                    {...field}
+                    className="p-8"
+                    />
+                  </FormControl>
+                </FormItem>
+               )}
+               />
+               <Button type="submit" className="h-full">
+                Send
+               </Button>
+          </form>
+        </Form>
+
       </div>
     </div>
   )
