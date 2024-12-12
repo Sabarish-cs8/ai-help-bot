@@ -10,11 +10,20 @@ import Characteristic from "@/components/Characteristic";
 import { useMutation, useQuery } from "@apollo/client";
 import { Copy } from "lucide-react";
 import Link from "next/link";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState, use } from "react";
 import { toast } from "sonner";
 import { ADD_CHARACTERISTIC, DELETE_CHATBOT, UPDATE_CHATBOT } from "@/graphql/mutations/mutations";
 import { redirect } from "next/navigation";
-function EditChatbot({params:{id}}:{params:{id:string}}) {
+interface EditChatbotPageProps {
+  params: Promise<{ id: string }>; // Directly define the shape of the params object
+}
+
+function EditChatbot(props:EditChatbotPageProps) {
+  const params = use(props.params);
+
+  const {
+    id
+  } = params;
 
   const [url , setUrl]=useState<string>("");
   const [newCharacteristic,setNewCharacteristic]=useState<string>("");
@@ -69,27 +78,27 @@ function EditChatbot({params:{id}}:{params:{id:string}}) {
     }
   };
 
-const handleUpdateChatbot =async (e: FormEvent<HTMLFormElement>)=>{
-  e.preventDefault();
+  const handleUpdateChatbot =async (e: FormEvent<HTMLFormElement>)=>{
+    e.preventDefault();
 
-  try {
-    const promise = updateChatbot({
-      variables:{
-        id,
-        name:chatbotName,
-      },
-    });
+    try {
+      const promise = updateChatbot({
+        variables:{
+          id,
+          name:chatbotName,
+        },
+      });
 
-    toast.promise(promise,{
-      loading:"Updating...",
-      success:"Chatbot Name Successfully updated!",
-      error:"Failed to update chatbot",
-    })
-  } catch (err) {
-    console.error("Failed to update chatbot:" ,err);
-    
+      toast.promise(promise,{
+        loading:"Updating...",
+        success:"Chatbot Name Successfully updated!",
+        error:"Failed to update chatbot",
+      })
+    } catch (err) {
+      console.error("Failed to update chatbot:" ,err);
+      
+    }
   }
-}
 
   const handleDelete = async (id:string)=>{
     const isConfirmed = window.confirm("Are you sure you want to delete this chatbot?");

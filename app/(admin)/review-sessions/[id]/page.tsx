@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Messages from "@/components/Messages";
 import { GET_CHAT_SESSION_MESSAGES } from "@/graphql/queries/queries";
 import { serverClient } from "@/lib/server/serverClient";
@@ -5,7 +6,12 @@ import { GetChatSessionMessagesResponse, GetChatSessionMessagesVariables } from 
 
 export const dynamic="force-dynamic";
 
-async function ReviewSession({params:{id}}:{params :{id:string}}) {
+async function ReviewSession(props:{params : Promise<{id:string}>}) {
+  const params = await props.params;
+
+  const {
+    id
+  } = params;
 
   const {
     data:{

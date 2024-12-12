@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import Avatar from "@/components/Avatar";
@@ -24,7 +25,7 @@ import { GetChatbotByIdResponse,
   MessagesByChatSessionIdVariables
 } from "@/types/types";
 import { useQuery } from "@apollo/client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { z } from "zod";
 import {zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -32,8 +33,13 @@ const formSchema = z.object({
   Message: z.string().min(2,"Your Message is too short!")
 });
 
-function ChatbotPage({params:{id}} :{params:{id:string}}) {
-  
+function ChatbotPage(props:{params: Promise<{id:string}>}) {
+  const params = use(props.params);
+
+  const {
+    id
+  } = params;
+
   const [name,setName]=useState("");
   const [email,setEmail]=useState("");
   const [isOpen,setIsOpen]=useState(true);
@@ -41,12 +47,12 @@ function ChatbotPage({params:{id}} :{params:{id:string}}) {
   const [loading,setLoading]=useState(false);
   const [messages,setMessages]=useState<Message[]>([]);
 
-   const form = useForm<z.infer<typeof formSchema>>({
-    resolver:zodResolver(formSchema),
-    defaultValues:{
-      Message:"",
-    },
-   });
+  const form = useForm<z.infer<typeof formSchema>>({
+   resolver:zodResolver(formSchema),
+   defaultValues:{
+     Message:"",
+   },
+  });
 
   const {data:chatBotData} = useQuery<GetChatbotByIdResponse>(
     GET_CHATBOT_BY_ID,
@@ -72,18 +78,18 @@ function ChatbotPage({params:{id}} :{params:{id:string}}) {
     }
   },[data])
 
-  
-    const handleInformationSubmit=async (e: React.FormEvent) =>{
-    e.preventDefault();
 
-    setLoading(true);
+  const handleInformationSubmit=async (e: React.FormEvent) =>{
+  e.preventDefault();
 
-    const chatId =await startNewChat(name,email,Number(id));
+  setLoading(true);
 
-    setChatId(chatId);
-    setLoading(false);
-    setIsOpen(false);
-  }
+  const chatId =await startNewChat(name,email,Number(id));
+
+  setChatId(chatId);
+  setLoading(false);
+  setIsOpen(false);
+}
 
   async function onSubmit(values:z.infer<typeof formSchema>){
     setLoading(true);
@@ -207,7 +213,7 @@ function ChatbotPage({params:{id}} :{params:{id:string}}) {
 
       <div className="flex flex-col w-full max-w-3xl mx-auto bg-white md:rounded-t-lg shadow-2xl md:mt-10">
         <div className="pb-4 border-b sticky top-0 z-50 bg-[#4D7DFB] py-5 px-10 text-white md:rounded-t-lg flex items-center space-x-4">
-          <Avatar seed={chatBotData?.chatbots.name!}
+          <Avatar seed={chatBotData?.chatbots?.name ?? "DefaultSeed"}
           className="h-12 w-12 bg-white rounded-full border-2 border-white" />
           <div>
             <h1 className="truncate text-lg">{chatBotData?.chatbots.name}</h1>
@@ -220,7 +226,8 @@ function ChatbotPage({params:{id}} :{params:{id:string}}) {
 
         <Messages
         messages={messages}
-        chatbotName={chatBotData?.chatbots.name!}
+        chatbotName={chatBotData?.chatbots?.name ?? "Default Chatbot Name"}
+
         />
             
 
